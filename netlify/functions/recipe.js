@@ -1,11 +1,9 @@
 import Groq from "groq-sdk";
 
-const client = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
-
 export default async function handler(req, res) {
-  // CORS (optional)
+  console.log("Function called - checking API key...");
+  console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
+
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -19,10 +17,23 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!process.env.GROQ_API_KEY) {
+      console.error("GROQ_API_KEY is not set!");
+      return res.status(500).json({
+        error: "API key not configured",
+        answer: "⚠️ Server configuration error: API key missing",
+      });
+    }
+
+    const client = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
+
     const { prompt } = req.body;
+    console.log("Prompt received:", prompt);
 
     const completion = await client.chat.completions.create({
-      model: "llama-3.3-70b-versatile", // or "mixtral-8x7b-32768"
+      model: "llama-3.3-70b-versatile",
       messages: [
         {
           role: "system",
@@ -36,11 +47,16 @@ export default async function handler(req, res) {
       ],
     });
 
+    console.log("Recipe generated successfully");
     return res.status(200).json({
       answer: completion.choices[0].message.content,
     });
   } catch (err) {
-    console.error("Recipe API Error:", err);
-    return res.status(500).json({ error: "Failed to generate recipe." });
+    console.error("Recipe API Error:", err.message);
+    console.error("Error details:", err);
+    return res.status(500).json({
+      error: "Failed to generate recipe",
+      answer: `⚠️ Error: ${err.message}`,
+    });
   }
 }

@@ -58,7 +58,7 @@ export default async function handler(req, context) {
         {
           role: "system",
           content:
-            "You are a chef who creates anti-inflammatory recipes with clear instructions.",
+            "You are a chef who creates anti-inflammatory recipes with clear instructions. You're concise and helpful, and kind.",
         },
         {
           role: "user",

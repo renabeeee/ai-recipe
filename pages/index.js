@@ -34,6 +34,10 @@ export default function Home() {
     }
   }
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+
   function formatRecipeContent(content) {
     const paragraphs = content.split("\n").filter((p) => p.trim());
 
@@ -46,7 +50,8 @@ export default function Home() {
         return (
           <h2
             key={idx}
-            className="text-2xl font-bold text-emerald-800 mt-8 mb-4 first:mt-0"
+            className="text-xl font-bold text-gray-900 mt-6 mb-3"
+            style={{ fontFamily: "Verdana" }}
           >
             {text}
           </h2>
@@ -60,7 +65,8 @@ export default function Home() {
         return (
           <li
             key={idx}
-            className="ml-6 mb-2 text-gray-700 leading-relaxed list-disc"
+            className="ml-6 mb-1 text-gray-800"
+            style={{ fontFamily: "Verdana" }}
           >
             {text}
           </li>
@@ -68,133 +74,208 @@ export default function Home() {
       }
 
       return (
-        <p key={idx} className="text-gray-700 leading-relaxed mb-4">
+        <p
+          key={idx}
+          className="text-gray-800 mb-3 leading-relaxed"
+          style={{ fontFamily: "Verdana" }}
+        >
           {paragraph}
         </p>
       );
     });
   }
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white">
+    <div
+      className="min-h-screen"
+      style={{
+        background: "linear-gradient(to bottom, #eef2f5, #d9e1e8)",
+        fontFamily: "Tahoma, Verdana, sans-serif",
+        color: "#111",
+      }}
+    >
       {/* Header */}
-      <header className="bg-white border-b border-emerald-100 shadow-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <h1 className="text-4xl font-bold text-emerald-800 text-center mb-2">
-            NOURISH
-          </h1>
-          <p className="text-center text-emerald-600">
-            Your Anti-Inflammatory Recipe Assistant
-          </p>
-        </div>
+      <header
+        style={{
+          background: "linear-gradient(to bottom, #fff, #e8ecf0)",
+          borderBottom: "1px solid #b7c3cf",
+          padding: "20px 0",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h1
+          className="text-center"
+          style={{
+            fontSize: "32px",
+            fontWeight: "bold",
+            color: "#003366",
+            textShadow: "1px 1px 0 #fff",
+          }}
+        >
+          NOURISH
+        </h1>
+        <p
+          className="text-center"
+          style={{ color: "#335577", marginTop: "4px", fontSize: "14px" }}
+        >
+          Your Anti-Inflammatory Recipe Assistant
+        </p>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main
+        className="mx-auto"
+        style={{
+          width: "90%",
+          maxWidth: "900px",
+          marginTop: "40px",
+        }}
+      >
         {/* Search Box */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12 border border-emerald-100">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="What would you like to cook? (e.g., turmeric smoothie, ginger salmon)"
-              className="flex-1 px-6 py-4 border-2 border-emerald-200 rounded-full focus:outline-none focus:border-emerald-400 text-lg text-gray-800 placeholder-gray-400"
-            />
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
-            >
-              {loading ? "Creating..." : "Get Recipe"}
-            </button>
-          </div>
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #b7c3cf",
+            padding: "20px",
+            boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+          }}
+        >
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Enter recipe idea (e.g., turmeric smoothie)"
+            style={{
+              width: "75%",
+              padding: "10px",
+              border: "1px solid #7e8fa3",
+              fontFamily: "Tahoma",
+              fontSize: "14px",
+              boxShadow: "inset 1px 1px 2px rgba(0,0,0,0.15)",
+            }}
+          />
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            style={{
+              marginLeft: "10px",
+              padding: "10px 18px",
+              background: "linear-gradient(to bottom, #5ba3ff, #1a6ad9)",
+              color: "#fff",
+              border: "1px solid #004a99",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.25)",
+            }}
+          >
+            {loading ? "Loading..." : "Generate"}
+          </button>
         </div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-emerald-100">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-            <p className="text-emerald-700 text-lg">Crafting your recipe...</p>
+          <div
+            style={{
+              background: "#fff",
+              padding: "30px",
+              marginTop: "30px",
+              border: "1px solid #b7c3cf",
+              textAlign: "center",
+              boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+            }}
+          >
+            <p style={{ color: "#003366", fontSize: "16px" }}>
+              Generating recipe…
+            </p>
           </div>
         )}
 
-        {/* Recipe Article */}
+        {/* Recipe */}
         {recipe && !loading && (
-          <article className="bg-white rounded-2xl shadow-lg p-12 border border-emerald-100">
-            {/* Recipe Title */}
-            <h1 className="text-4xl font-bold text-emerald-800 mb-6 capitalize">
+          <div
+            style={{
+              background: "#fff",
+              padding: "30px",
+              marginTop: "30px",
+              border: "1px solid #b7c3cf",
+              boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+            }}
+          >
+            <h1
+              style={{
+                fontSize: "26px",
+                color: "#003366",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
               {recipe.title}
             </h1>
 
-            <div className="h-1 w-24 bg-gradient-to-r from-emerald-400 to-emerald-600 mb-8"></div>
+            <hr style={{ margin: "12px 0 20px", borderColor: "#c3cfdb" }} />
 
-            {/* Recipe Content */}
-            <div className="prose prose-lg max-w-none">
-              {formatRecipeContent(recipe.content)}
-            </div>
+            <div>{formatRecipeContent(recipe.content)}</div>
 
-            {/* New Recipe Button */}
-            <div className="mt-12 pt-8 border-t border-emerald-100 text-center">
-              <button
-                onClick={() => {
-                  setRecipe(null);
-                  setInput("");
-                }}
-                className="text-emerald-600 hover:text-emerald-700 font-semibold underline transition-colors"
-              >
-                ← Create another recipe
-              </button>
-            </div>
-          </article>
+            <button
+              onClick={() => {
+                setRecipe(null);
+                setInput("");
+              }}
+              style={{
+                display: "inline-block",
+                marginTop: "30px",
+                color: "#003399",
+                textDecoration: "underline",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              ← Create Another Recipe
+            </button>
+          </div>
         )}
 
         {/* Welcome State */}
         {!recipe && !loading && (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-emerald-100">
-            <div className="text-6xl mb-6">🥗</div>
-            <h2 className="text-2xl font-bold text-emerald-800 mb-4">
+          <div
+            style={{
+              background: "#fff",
+              padding: "30px",
+              marginTop: "30px",
+              border: "1px solid #b7c3cf",
+              textAlign: "center",
+              boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "22px",
+                fontWeight: "bold",
+                color: "#003366",
+                marginBottom: "10px",
+              }}
+            >
               Welcome to NOURISH
             </h2>
-            <p className="text-emerald-700 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Get personalized anti-inflammatory recipes tailored to your
-              preferences. Just tell me what you'd like to cook, and I'll create
-              a delicious, health-conscious recipe for you.
+            <p style={{ color: "#335577", lineHeight: "1.4" }}>
+              Tell me what you want to cook and I’ll generate an
+              anti-inflammatory recipe just for you.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <button
-                onClick={() => setInput("turmeric smoothie")}
-                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-3 rounded-lg transition-colors border border-emerald-200 hover:border-emerald-300"
-              >
-                🥤 Turmeric Smoothie
-              </button>
-              <button
-                onClick={() => setInput("ginger salmon")}
-                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-3 rounded-lg transition-colors border border-emerald-200 hover:border-emerald-300"
-              >
-                🐟 Ginger Salmon
-              </button>
-              <button
-                onClick={() => setInput("quinoa salad")}
-                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-3 rounded-lg transition-colors border border-emerald-200 hover:border-emerald-300"
-              >
-                🥗 Quinoa Salad
-              </button>
-            </div>
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="text-center py-8 text-emerald-600 text-sm">
-        Powered by AI • Recipes for wellness
+      <footer
+        className="text-center"
+        style={{
+          padding: "20px",
+          marginTop: "40px",
+          color: "#335577",
+          fontSize: "12px",
+        }}
+      >
+        © 2003 NOURISH • Powered by AI
       </footer>
     </div>
   );

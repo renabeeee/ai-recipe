@@ -1,35 +1,55 @@
 import Groq from "groq-sdk";
 
-export default async function handler(req, res) {
+export default async function handler(req, context) {
   console.log("Function called - checking API key...");
   console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+  // Handle OPTIONS for CORS
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return new Response(null, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
   }
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 
   try {
     if (!process.env.GROQ_API_KEY) {
       console.error("GROQ_API_KEY is not set!");
-      return res.status(500).json({
-        error: "API key not configured",
-        answer: "⚠️ Server configuration error: API key missing",
-      });
+      return new Response(
+        JSON.stringify({
+          error: "API key not configured",
+          answer: "⚠️ Server configuration error: API key missing",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
     }
 
     const client = new Groq({
       apiKey: process.env.GROQ_API_KEY,
     });
 
-    const { prompt } = req.body;
+    const body = await req.json();
+    const { prompt } = body;
     console.log("Prompt received:", prompt);
 
     const completion = await client.chat.completions.create({
@@ -48,15 +68,33 @@ export default async function handler(req, res) {
     });
 
     console.log("Recipe generated successfully");
-    return res.status(200).json({
-      answer: completion.choices[0].message.content,
-    });
+    return new Response(
+      JSON.stringify({
+        answer: completion.choices[0].message.content,
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   } catch (err) {
     console.error("Recipe API Error:", err.message);
     console.error("Error details:", err);
-    return res.status(500).json({
-      error: "Failed to generate recipe",
-      answer: `⚠️ Error: ${err.message}`,
-    });
+    return new Response(
+      JSON.stringify({
+        error: "Failed to generate recipe",
+        answer: `⚠️ Error: ${err.message}`,
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   }
 }

@@ -53,7 +53,7 @@ export default async function handler(req, context) {
     console.log("Prompt received:", prompt);
 
     const completion = await client.chat.completions.create({
-      model: "llama-3.3-70b-specdec",
+      model: "openai/gpt-oss-120b",
       messages: [
         {
           role: "system",
